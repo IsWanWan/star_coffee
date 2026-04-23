@@ -97,7 +97,7 @@
         </div>
       </div>
 
-      <!-- Agent 4: 风味顾问 (CRITICAL) -->
+      <!-- Agent 4: 导购顾问 (CRITICAL) -->
       <div class="agent-card agent-card--critical">
         <div class="agent-card-img-wrap">
           <img src="/images/agent/kafeiguwen.png" alt="风味顾问" class="agent-card-img" />
@@ -109,12 +109,12 @@
         <div class="agent-card-body">
           <div class="agent-card-header">
             <span class="material-symbols-outlined">auto_fix_high</span>
-            <h3 class="agent-name">风味顾问</h3>
+            <h3 class="agent-name">导购顾问 · 为懂咖啡的您而生</h3>
           </div>
-          <p class="agent-desc">通过会员画像提供个性化手冲建议，并基于当日温湿度调整研磨度建议。当前有 2 项配置待优化。</p>
+          <p class="agent-desc">我们不止看豆子，更看「人」与「天」——依会员口味画像 ，精细校准研磨与萃取。</p>
           <div class="agent-card-footer">
             <span class="agent-last-active critical-text">REQUIRES ATTENTION</span>
-            <button class="agent-fix-btn">立即修复</button>
+            <button class="agent-fix-btn" @click="showConsultModal = true">点击咨询</button>
           </div>
         </div>
       </div>
@@ -128,16 +128,122 @@
         <p class="add-desc">点击此处部署新的智能体，助力门店数字化升级</p>
       </div>
     </section>
+
+    <!-- Consult Modal -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showConsultModal" class="consult-overlay" @click.self="showConsultModal = false">
+          <div class="consult-modal">
+            <!-- Hero Banner -->
+            <div class="consult-hero">
+              <img src="/images/agent/kafeiguwen.png" alt="导购顾问" class="consult-hero-img" />
+              <div class="consult-hero-mask"></div>
+              <button class="consult-close" @click="showConsultModal = false">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+              <div class="consult-hero-text">
+                <h2 class="consult-title">导购顾问 · 为懂咖啡的您而生</h2>
+                <p class="consult-subtitle">我们不止看豆子，更看「人」与「天」——依会员口味画像，精细校准研磨与萃取。</p>
+              </div>
+            </div>
+
+            <!-- Suggested Questions -->
+            <div class="consult-body">
+              <p class="consult-hint">您可以这样问我：</p>
+              <div class="consult-bubbles">
+                <button
+                  v-for="(q, i) in suggestedQuestions"
+                  :key="i"
+                  class="consult-bubble"
+                  @click="selectQuestion(q)"
+                >
+                  <span class="bubble-q">Q{{ i + 1 }}</span>
+                  {{ q }}
+                </button>
+              </div>
+
+              <!-- Chat Input -->
+              <div class="consult-chat-wrap">
+                <div class="consult-messages" ref="messagesEl">
+                  <div v-for="(msg, i) in messages" :key="i" :class="['msg', msg.role]">
+                    <div class="msg-bubble">{{ msg.content }}</div>
+                  </div>
+                </div>
+                <div class="consult-input-row">
+                  <input
+                    v-model="inputText"
+                    class="consult-input"
+                    placeholder="比如：我今天想喝果酸明亮的豆子…"
+                    @keydown.enter="sendMessage"
+                  />
+                  <button class="consult-send" @click="sendMessage">
+                    <span class="material-symbols-outlined">send</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import { ref, nextTick } from 'vue'
+
 const stats = [
   { label: '活跃智能体', value: '03', icon: 'smart_toy' },
   { label: '任务完成率', value: '98.5%', icon: 'task_alt' },
   { label: '响应时效', value: '240ms', icon: 'bolt' },
   { label: '服务客次', value: '12.4k', icon: 'groups' },
 ]
+
+const showConsultModal = ref(false)
+const inputText = ref('')
+const messagesEl = ref(null)
+const messages = ref([])
+
+const suggestedQuestions = [
+  '新客第一次来店，给我介绍下你们比较特色的咖啡吧？',
+  '口感醇正，不要太甜，推荐什么咖啡？'
+  
+]
+
+function selectQuestion(q) {
+  inputText.value = q
+  sendMessage()
+}
+
+async function sendMessage() {
+  const text = inputText.value.trim()
+  if (!text) return
+  messages.value.push({ role: 'user', content: text })
+  inputText.value = ''
+  await nextTick()
+  scrollToBottom()
+  // 模拟顾问回复
+  setTimeout(async () => {
+    const replies = {
+      '我偏爱果酸明亮的风味，今天湿度高，该调粗还是细研磨？':
+        '湿度高时空气含水量大，咖啡粉吸湿后流速变慢，建议适当调粗 1-2 格，保持萃取时间在 25-30s 之间，果酸层次会更干净明亮。',
+      '口感醇正，不要太甜，推荐什么咖啡？':
+        '推荐您试试我们的「耶加雪菲日晒」——花香清雅、果酸柔和，甜感内敛不腻口。若偏爱更厚重的醇度，「苏门答腊曼特宁」也是绝佳选择。',
+      '新客第一次来店，给我介绍下你们比较特色的咖啡吧？':
+        '欢迎！我们主打精品单品豆，每季轮换产区。当季主推「巴拿马瑰夏」，茉莉花香与桃子果汁感并存，是入门精品咖啡的绝佳起点。也可以告诉我您平时的口味偏好，我来为您精准匹配。',
+    }
+    const reply = replies[text] || '感谢您的提问！我们的顾问将为您提供专属的咖啡建议，请稍候片刻。'
+    messages.value.push({ role: 'assistant', content: reply })
+    await nextTick()
+    scrollToBottom()
+  }, 800)
+}
+
+function scrollToBottom() {
+  if (messagesEl.value) {
+    messagesEl.value.scrollTop = messagesEl.value.scrollHeight
+  }
+}
 </script>
 
 <style scoped>
@@ -331,7 +437,7 @@ const stats = [
   align-items: center;
   justify-content: space-between;
   padding-top: 24px;
-  border-top: 1px solid var(--bg-brown);
+  border-top: 2px solid ;color: #34261e;
 }
 .agent-last-active {
   font-size: 11px;
@@ -404,4 +510,226 @@ const stats = [
   .stats-grid { margin: 24px 16px; }
   .agent-grid { margin: 0 16px; }
 }
+
+/* ── Consult Modal ── */
+.consult-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.consult-modal {
+  width: 100%;
+  max-width: 560px;
+  background: #1A1816;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(196, 154, 94, 0.2);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+/* Hero Banner */
+.consult-hero {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.consult-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.65;
+}
+.consult-hero-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,8,6,0.2) 0%, rgba(26,24,22,0.85) 100%);
+}
+.consult-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #a8a29e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 1;
+}
+.consult-close:hover { background: rgba(0,0,0,0.8); color: #fff; }
+.consult-close .material-symbols-outlined { font-size: 18px; }
+
+.consult-hero-text {
+  position: absolute;
+  bottom: 20px;
+  left: 24px;
+  right: 24px;
+  z-index: 1;
+}
+.consult-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e8d5b0;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+.consult-subtitle {
+  font-size: 13px;
+  color: #a8967a;
+  line-height: 1.6;
+}
+
+/* Body */
+.consult-body {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.consult-hint {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #57534e;
+}
+
+/* Bubbles */
+.consult-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.consult-bubble {
+  position: relative;
+  background: #2A2420;
+  border: 1px solid rgba(196,154,94,0.15);
+  border-radius: 12px 12px 12px 4px;
+  padding: 12px 16px;
+  text-align: left;
+  color: #c8b89a;
+  font-size: 13.5px;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.consult-bubble:hover {
+  background: #332C26;
+  border-color: rgba(196,154,94,0.35);
+  color: #e8d5b0;
+  transform: translateX(3px);
+}
+.bubble-q {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #C49A5E;
+  background: rgba(196,154,94,0.12);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-top: 1px;
+}
+
+/* Chat */
+.consult-chat-wrap {
+  background: #141210;
+  border-radius: 12px;
+  border: 1px solid rgba(78,70,57,0.4);
+  overflow: hidden;
+}
+.consult-messages {
+  min-height: 180px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3530 transparent;
+}
+/* .consult-messages:empty { display: none; } */
+
+.msg { display: flex; }
+.msg.user { justify-content: flex-end; }
+.msg.assistant { justify-content: flex-start; }
+.msg-bubble {
+  max-width: 80%;
+  padding: 9px 13px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.msg.user .msg-bubble {
+  background: rgba(196,154,94,0.18);
+  color: #e8d5b0;
+  border-radius: 12px 12px 4px 12px;
+}
+.msg.assistant .msg-bubble {
+  background: #2A2420;
+  color: #c8b89a;
+  border-radius: 12px 12px 12px 4px;
+}
+
+.consult-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-top: 1px solid rgba(78,70,57,0.4);
+}
+.consult-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  font-size: 13.5px;
+  color: #c8b89a;
+  font-family: inherit;
+}
+.consult-input::placeholder { color: #57534e; }
+.consult-send {
+  width: 48px;
+  height: 48px;
+  background: #C49A5E;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.2s;
+  flex-shrink: 0;
+}
+.consult-send:hover { filter: brightness(1.15); }
+.consult-send .material-symbols-outlined { font-size: 20px; color: #1A1816; }
+
+/* Transition */
+.modal-fade-enter-active,
+.modal-fade-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
+.modal-fade-enter-from,
+.modal-fade-leave-to { opacity: 0; transform: scale(0.96); }
 </style>

@@ -34,8 +34,36 @@
         <span>智能体</span>
       </RouterLink>
 
-      <!-- Section -->
-      <div class="sidebar-section">
+      <!-- Knowledge Category Accordion -->
+      <div v-if="route.path === '/knowledge'" class="sidebar-section">
+        <div class="sidebar-section-toggle" style="pointer-events:none">
+          <span>知识库分类</span>
+        </div>
+        <div class="knowledge-cat-list">
+          <div v-for="(cat, idx) in knowledgeCategories" :key="idx" class="kcat-item">
+            <button
+              class="kcat-header"
+              :class="{ active: activeKnowledgeCat === idx }"
+              @click="toggleKnowledgeCat(idx)"
+            >
+              <span class="material-symbols-outlined kcat-icon">{{ cat.icon }}</span>
+              <span class="kcat-name">{{ cat.name }}</span>
+              <span class="material-symbols-outlined kcat-arrow" :class="{ open: activeKnowledgeCat === idx }">chevron_right</span>
+            </button>
+            <div class="kcat-children" :class="{ expanded: activeKnowledgeCat === idx }">
+              <div>
+                <button v-for="(child, ci) in cat.children" :key="ci" class="kcat-child">
+                  <span class="kcat-dot"></span>
+                  {{ child }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other pages section -->
+      <div v-else class="sidebar-section">
         <button class="sidebar-section-toggle" @click="sectionOpen = !sectionOpen">
           <span>{{ sectionLabel }}</span>
           <span class="material-symbols-outlined icon-filled" style="font-size:18px;transition:transform 0.3s" :style="{ transform: sectionOpen ? 'rotate(180deg)' : 'rotate(0)' }">expand_more</span>
@@ -61,11 +89,52 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { useRoute } from 'vue-router'
+
+const showCreateKnowledgeModal = inject('showCreateKnowledgeModal', ref(false))
 
 const route = useRoute()
 const sectionOpen = ref(true)
+const activeKnowledgeCat = ref(null)
+
+const knowledgeCategories = [
+  {
+    icon: 'menu_book',
+    name: '产品与菜单手册',
+    children: ['咖啡菜单', '咖啡豆档案', '饮品&食品标准配方', '新品研发流程与测试记录'],
+  },
+  {
+    icon: 'store',
+    name: '运营与现场管理',
+    children: ['门店 SOP(开店/闭店、清洁消毒)', '库存管理、损耗控制', '食品安全规范', '设备操作与维护','故障应急处理'],
+  },
+ 
+  {
+    icon: 'favorite',
+    name: '顾客体验与营销',
+    children: ['迎宾、点单、客诉处理', '会员体系与私域运营策略', '品牌视觉规范、内容素材库', '本地化营销方案'],
+  },
+  {
+    icon: 'groups',
+    name: '人员与制度规范',
+    children: ['企业规章制度', '岗位职责与晋升路径', '培训资料', '劳动合规与应急预案'],
+  },
+  {
+    icon: 'inventory_2',
+    name: '供应链与成本管控',
+    children: ['供应商管理', '采购标准', '成本核算模型'],
+  },
+  {
+    icon: 'bar_chart',
+    name: '数据与持续改进',
+    children: ['经营数据报表模板', '顾客反馈/改进行动追踪', '知识库更新机制与版本管理'],
+  },
+]
+
+function toggleKnowledgeCat(idx) {
+  activeKnowledgeCat.value = activeKnowledgeCat.value === idx ? null : idx
+}
 
 const actionLabel = computed(() => {
   if (route.path === '/chat') return '开启新对话'
@@ -76,7 +145,6 @@ const actionLabel = computed(() => {
 
 const sectionLabel = computed(() => {
   if (route.path === '/chat') return '对话记录'
-  if (route.path === '/knowledge') return '知识库分类'
   if (route.path === '/agents') return '智能体工作记录'
   return '记录'
 })
@@ -88,12 +156,6 @@ const sectionItems = computed(() => {
     { label: '节日活动策划建议' },
     { label: '门店客流峰值复盘' },
   ]
-  if (route.path === '/knowledge') return [
-    { label: '产品手册', count: '12' },
-    { label: '运营 SOP', count: '28' },
-    { label: '培训资料', count: '20' },
-    { label: '供应链标准', count: '16' },
-  ]
   if (route.path === '/agents') return [
     { label: '咖啡顾问智能体巡检' },
     { label: '库存助手补货建议' },
@@ -104,6 +166,8 @@ const sectionItems = computed(() => {
 })
 
 function handleActionClick() {
-  // placeholder for future action
+  if (route.path === '/knowledge') {
+    showCreateKnowledgeModal.value = true
+  }
 }
 </script>

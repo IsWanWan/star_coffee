@@ -39,6 +39,8 @@
 
     <!-- Content -->
     <div class="knowledge-content">
+     
+
       <div class="knowledge-main">
         <!-- Hero Banner -->
         <section class="hero-banner">
@@ -99,25 +101,8 @@
             </div>
           </div>
 
-          <!-- Card 3: AI Tool -->
-          <div class="doc-card doc-card--ai glass-card">
-            <div class="doc-card-new-badge">NEW ASSET</div>
-            <div class="doc-card-ai-icon">
-              <span class="material-symbols-outlined" style="font-size:24px;color:#0F0E0D">auto_awesome</span>
-            </div>
-            <h4 class="doc-card-title" style="margin-bottom:8px">AI 咖啡风味匹配模型</h4>
-            <p class="doc-card-desc" style="margin-bottom:24px">利用神经元网络算法根据顾客口味偏好（酸甜苦醇）自动匹配最优选咖啡豆。目前处于内测阶段。</p>
-            <div class="doc-card-footer">
-              <div class="doc-card-meta">
-                <span class="doc-card-meta-item"><span class="material-symbols-outlined" style="font-size:12px">schedule</span> 刚刚</span>
-                <span class="doc-card-meta-item"><span class="material-symbols-outlined" style="font-size:12px">visibility</span> 142</span>
-              </div>
-              <span class="doc-card-link">开启工具</span>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="doc-card glass-card">
+            <!-- Card 3 -->
+            <div class="doc-card glass-card">
             <div class="doc-card-img-wrap">
               <img src="/images/knowledge/kafeitou.png" alt="Coffee Beans" class="doc-card-img" />
               <div class="doc-card-img-overlay"></div>
@@ -135,9 +120,30 @@
               </div>
             </div>
           </div>
+      
+          <div class="doc-card glass-card">
+            <div class="doc-card-img-wrap">
+              <img src="/images/knowledge/kafeiwu.png" alt="Latte Art" class="doc-card-img" />
+              <div class="doc-card-img-overlay"></div>
+              <span class="doc-card-tag">AI 咖啡风味匹配模型</span>
+            </div>
+            <div class="doc-card-body">
+              <div class="doc-card-row">
+                <h4 class="doc-card-title">AI 咖啡风味匹配模型</h4>
+                <span class="doc-card-id">DOC-880</span>
+              </div>
+              <p class="doc-card-desc">针对坚果、乳糖、麸质等过敏源的标准化服务术语与替代建议，确保食品安全沟通合规。</p>
+              <div class="doc-card-footer">
+                <span class="doc-card-time">昨日更新</span>
+                <span class="doc-card-link">查看详情</span>
+              </div>
+            </div>
+          </div>
+
+        
 
           <!-- Card 5: Add New -->
-          <div class="doc-card doc-card--add">
+          <div class="doc-card doc-card--add" @click="showCreateModal = true">
             <div class="add-icon-wrap">
               <span class="material-symbols-outlined" style="font-size:28px">add</span>
             </div>
@@ -188,11 +194,160 @@
     <button class="fab">
       <span class="material-symbols-outlined" style="font-size:28px;color:#0F0E0D">chat_bubble</span>
     </button>
+
+    <!-- Create Knowledge Modal -->
+    <Teleport to="body">
+      <div v-if="showCreateModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-box">
+          <div class="modal-header">
+            <div class="modal-title-group">
+              <div class="modal-icon">
+                <span class="material-symbols-outlined" style="font-size:20px;color:#0F0E0D">library_books</span>
+              </div>
+              <div>
+                <h3 class="modal-title">新建知识库</h3>
+                <p class="modal-subtitle">创建新的知识库条目并配置检索信息</p>
+              </div>
+            </div>
+            <button class="modal-close" @click="closeModal">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label">知识库名称 <span class="required">*</span></label>
+              <input
+                v-model="form.name"
+                class="form-input"
+                placeholder="例：食品规范/设备操作指南"
+                type="text"
+              />
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label class="form-label">分类</label>
+              <div class="select-wrap">
+                <select v-model="form.category" class="form-select">
+                  <option value="">请选择分类</option>
+                  <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+                </select>
+                <span class="material-symbols-outlined select-arrow">expand_more</span>
+              </div>
+            </div>
+
+             <!-- Tags -->
+             <div class="form-group">
+              <label class="form-label">检索标签</label>
+              <div v-if="!form.category" class="tags-empty-hint">请先选择分类</div>
+              <template v-else>
+                <div class="tag-options">
+                  <button
+                    v-for="tag in availableTags"
+                    :key="tag"
+                    type="button"
+                    class="tag-option"
+                    :class="{ selected: form.tags.includes(tag) }"
+                    @click="toggleTag(tag)"
+                  >
+                    <span class="tag-option-check material-symbols-outlined" v-if="form.tags.includes(tag)">check</span>
+                    # {{ tag }}
+                  </button>
+                </div>
+                <div v-if="form.tags.length" class="tags-selected-summary">
+                  已选 {{ form.tags.length }} 个标签
+                </div>
+              </template>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label">简介</label>
+              <textarea
+                v-model="form.description"
+                class="form-textarea"
+                placeholder="简要描述该知识库的内容与用途..."
+                rows="3"
+              ></textarea>
+            </div>
+
+           
+
+            <!-- Cover Image -->
+            <div class="form-group">
+              <label class="form-label">封面图片</label>
+              <div
+                class="cover-upload-zone"
+                :class="{ 'cover-upload-zone--active': isCoverDragging, 'cover-upload-zone--filled': form.coverPreview }"
+                @dragover.prevent="isCoverDragging = true"
+                @dragleave="isCoverDragging = false"
+                @drop.prevent="handleCoverDrop"
+                @click="triggerCoverInput"
+              >
+                <input ref="coverInputRef" type="file" accept="image/*" style="display:none" @change="handleCoverChange" />
+                <template v-if="form.coverPreview">
+                  <img :src="form.coverPreview" class="cover-preview-img" alt="封面预览" />
+                  <div class="cover-preview-overlay">
+                    <span class="material-symbols-outlined" style="font-size:20px">edit</span>
+                    <span style="font-size:12px">更换图片</span>
+                  </div>
+                  <button class="cover-remove-btn" @click.stop="removeCover">
+                    <span class="material-symbols-outlined" style="font-size:14px">close</span>
+                  </button>
+                </template>
+                <template v-else>
+                  <span class="material-symbols-outlined cover-upload-icon">add_photo_alternate</span>
+                  <p class="upload-text">拖拽图片至此，或 <span class="upload-link">点击上传</span></p>
+                  <p class="upload-hint">支持 JPG、PNG、WebP，建议比例 16:9</p>
+                </template>
+              </div>
+            </div>
+
+            <!-- Upload -->
+            <div class="form-group">
+              <label class="form-label">上传文档</label>
+              <div
+                class="upload-zone"
+                :class="{ 'upload-zone--active': isDragging }"
+                @dragover.prevent="isDragging = true"
+                @dragleave="isDragging = false"
+                @drop.prevent="handleDrop"
+                @click="triggerFileInput"
+              >
+                <input ref="fileInputRef" type="file" multiple accept=".pdf,.doc,.docx,.txt,.md" style="display:none" @change="handleFileChange" />
+                <span class="material-symbols-outlined upload-icon">upload_file</span>
+                <p class="upload-text">拖拽文件至此，或 <span class="upload-link">点击上传</span></p>
+                <p class="upload-hint">支持 PDF、Word、TXT、Markdown，单文件最大 20MB</p>
+                <div v-if="form.files.length" class="file-list">
+                  <div v-for="(f, i) in form.files" :key="i" class="file-item">
+                    <span class="material-symbols-outlined" style="font-size:14px;color:var(--primary-gold)">description</span>
+                    <span class="file-name">{{ f.name }}</span>
+                    <button class="tag-remove" @click.stop="removeFile(i)">
+                      <span class="material-symbols-outlined" style="font-size:12px">close</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-cancel" @click="closeModal">取消</button>
+            <button class="btn-submit" :disabled="!form.files.length" @click="handleSubmit">
+              <span class="material-symbols-outlined" style="font-size:16px">add</span>
+              创建知识库
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch, inject } from 'vue'
 
 const searchQuery = ref('')
 const activeTag = ref('全部')
@@ -203,6 +358,98 @@ const weeklyUpdates = [
   { title: '修订：会员问答话术模板', time: '昨天', category: '培训资料' },
   { title: '归档：春季风味推荐手册', time: '3 天前', category: '产品手册' },
 ]
+
+const categories_nav = [
+  { icon: 'menu_book', name: '产品与菜单手册', children: ['咖啡菜单', '咖啡豆档案', '饮品&食品标准配方', '新品研发流程与测试记录'] },
+  { icon: 'store', name: '运营与现场管理', children: ['门店 SOP(开店/闭店、清洁消毒)', '库存管理、损耗控制', '食品安全规范', '设备操作与维护', '故障应急处理'] },
+  { icon: 'favorite', name: '顾客体验与营销', children: ['迎宾、点单、客诉处理', '会员体系与私域运营策略', '品牌视觉规范、内容素材库', '本地化营销方案'] },
+  { icon: 'groups', name: '人员与制度规范', children: ['企业规章制度', '岗位职责与晋升路径', '培训资料', '劳动合规与应急预案'] },
+  { icon: 'inventory_2', name: '供应链与成本管控', children: ['供应商管理', '采购标准', '成本核算模型'] },
+  { icon: 'bar_chart', name: '数据与持续改进', children: ['经营数据报表模板', '顾客反馈/改进行动追踪', '知识库更新机制与版本管理'] },
+]
+
+const activeCategory = ref(null)
+const activeChild = ref(null)
+
+function toggleCategory(idx) {
+  activeCategory.value = activeCategory.value === idx ? null : idx
+}
+
+const categoryTagMap = {
+  '产品与菜单手册': ['咖啡菜单', '咖啡豆档案', '饮品&食品标准配方', '新品研发流程与测试记录'],
+  '运营与现场管理': ['门店 SOP(开店/闭店、清洁消毒)', '库存管理、损耗控制', '食品安全规范', '设备操作与维护', '故障应急处理'],
+  '顾客体验与营销': ['迎宾、点单、客诉处理', '会员体系与私域运营策略', '品牌视觉规范、内容素材库', '本地化营销方案'],
+  '人员与制度规范': ['企业规章制度', '岗位职责与晋升路径', '培训资料', '劳动合规与应急预案'],
+  '供应链与成本管控': ['供应商管理', '采购标准', '成本核算模型'],
+  '数据与持续改进': ['经营数据报表模板', '顾客反馈/改进行动追踪', '知识库更新机制与版本管理'],
+}
+
+// Modal
+const showCreateModal = inject('showCreateKnowledgeModal', ref(false))
+const isDragging = ref(false)
+const fileInputRef = ref(null)
+const isCoverDragging = ref(false)
+const coverInputRef = ref(null)
+
+const categories = Object.keys(categoryTagMap)
+
+const defaultForm = () => ({ name: '', category: '', description: '', tags: [], files: [], coverPreview: '' })
+const form = ref(defaultForm())
+
+const availableTags = computed(() => categoryTagMap[form.value.category] ?? [])
+
+watch(() => form.value.category, () => { form.value.tags = [] })
+
+function toggleTag(tag) {
+  const idx = form.value.tags.indexOf(tag)
+  if (idx === -1) form.value.tags.push(tag)
+  else form.value.tags.splice(idx, 1)
+}
+
+function closeModal() {
+  showCreateModal.value = false
+  form.value = defaultForm()
+}
+
+function triggerFileInput() { fileInputRef.value?.click() }
+
+function handleFileChange(e) {
+  form.value.files.push(...Array.from(e.target.files))
+  e.target.value = ''
+}
+
+function handleDrop(e) {
+  isDragging.value = false
+  form.value.files.push(...Array.from(e.dataTransfer.files))
+}
+
+function triggerCoverInput() { coverInputRef.value?.click() }
+
+function setCoverFile(file) {
+  if (!file || !file.type.startsWith('image/')) return
+  const reader = new FileReader()
+  reader.onload = e => { form.value.coverPreview = e.target.result }
+  reader.readAsDataURL(file)
+}
+
+function handleCoverChange(e) {
+  setCoverFile(e.target.files[0])
+  e.target.value = ''
+}
+
+function handleCoverDrop(e) {
+  isCoverDragging.value = false
+  setCoverFile(e.dataTransfer.files[0])
+}
+
+function removeCover() { form.value.coverPreview = '' }
+
+function removeFile(i) { form.value.files.splice(i, 1) }
+
+function handleSubmit() {
+  console.log('create knowledge base', form.value)
+  closeModal()
+}
 </script>
 
 <style scoped>
@@ -618,4 +865,295 @@ const weeklyUpdates = [
   .hero-body { padding: 0 24px; }
   .hero-title { font-size: 24px; }
 }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 5, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+.modal-box {
+  background: #1c1710;
+  border: 1px solid rgba(197,160,89,0.2);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid rgba(197,160,89,0.1);
+  flex-shrink: 0;
+}
+.modal-title-group { display: flex; align-items: center; gap: 14px; }
+.modal-icon {
+  width: 40px; height: 40px;
+  background: var(--primary-gold);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.modal-title { font-size: 18px; font-weight: 600; color: white; margin-bottom: 2px; }
+.modal-subtitle { font-size: 12px; color: rgba(197,160,89,0.5); }
+.modal-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(197,160,89,0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: rgba(197,160,89,0.1); }
+.modal-close .material-symbols-outlined { color: rgba(197,160,89,0.6); font-size: 18px; }
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-label { font-size: 12px; font-weight: 600; color: rgba(197,160,89,0.7); letter-spacing: 0.05em; }
+.required { color: #e57373; }
+.form-input, .form-select, .form-textarea {
+  background: rgba(22,19,14,0.8);
+  border: 1px solid rgba(197,160,89,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--on-surface);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 1px rgba(197,160,89,0.3);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: rgba(197,160,89,0.25); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.select-wrap { position: relative; }
+.form-select { width: 100%; appearance: none; cursor: pointer; }
+.form-select option { background: #1c1710; }
+.select-arrow {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: rgba(197,160,89,0.5);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.tags-input-wrap {
+  background: rgba(22,19,14,0.8);
+  border: 1px solid rgba(197,160,89,0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+.tags-empty-hint {
+  font-size: 12px;
+  color: rgba(197,160,89,0.3);
+  padding: 10px 14px;
+  background: rgba(22,19,14,0.8);
+  border: 1px solid rgba(197,160,89,0.15);
+  border-radius: 8px;
+}
+.tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: rgba(22,19,14,0.8);
+  border: 1px solid rgba(197,160,89,0.2);
+  color: rgba(197,160,89,0.6);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag-option:hover { border-color: rgba(197,160,89,0.5); color: var(--primary-gold); }
+.tag-option.selected { background: rgba(197,160,89,0.15); border-color: var(--primary-gold); color: var(--primary-gold); }
+.tag-option-check { font-size: 12px; }
+.tags-selected-summary { font-size: 11px; color: rgba(197,160,89,0.4); margin-top: 4px; }
+
+.tags-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(197,160,89,0.15);
+  border: 1px solid rgba(197,160,89,0.3);
+  color: var(--primary-gold);
+  font-size: 12px;
+}
+.tag-remove {
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: rgba(197,160,89,0.6); padding: 0;
+  transition: color 0.2s;
+}
+.tag-remove:hover { color: var(--primary-gold); }
+.tags-input {
+  flex: 1;
+  min-width: 120px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--on-surface);
+  font-size: 13px;
+  padding: 2px 0;
+}
+.tags-input::placeholder { color: rgba(197,160,89,0.25); }
+
+.cover-upload-zone {
+  border: 2px dashed rgba(197,160,89,0.2);
+  border-radius: 10px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cover-upload-zone:hover,
+.cover-upload-zone--active {
+  border-color: rgba(197,160,89,0.5);
+  background: rgba(197,160,89,0.04);
+}
+.cover-upload-zone--filled { border-style: solid; border-color: rgba(197,160,89,0.3); }
+.cover-upload-icon { font-size: 32px; color: rgba(197,160,89,0.4); }
+.cover-preview-img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.cover-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,8,5,0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: rgba(197,160,89,0.9);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cover-upload-zone:hover .cover-preview-overlay { opacity: 1; }
+.cover-remove-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(10,8,5,0.7);
+  border: 1px solid rgba(197,160,89,0.3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: rgba(197,160,89,0.8);
+  transition: background 0.2s;
+  z-index: 1;
+}
+.cover-remove-btn:hover { background: rgba(197,160,89,0.2); }
+
+.upload-zone {
+  border: 2px dashed rgba(197,160,89,0.2);
+  border-radius: 10px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.upload-zone:hover, .upload-zone--active {
+  border-color: rgba(197,160,89,0.5);
+  background: rgba(197,160,89,0.04);
+}
+.upload-icon { font-size: 32px; color: rgba(197,160,89,0.4); }
+.upload-text { font-size: 13px; color: rgba(197,160,89,0.6); }
+.upload-link { color: var(--primary-gold); font-weight: 600; }
+.upload-hint { font-size: 11px; color: rgba(197,160,89,0.3); }
+.file-list { width: 100%; margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(45,27,15,0.5);
+  border: 1px solid rgba(197,160,89,0.1);
+}
+.file-name { flex: 1; font-size: 12px; color: rgba(197,160,89,0.8); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(197,160,89,0.1);
+  flex-shrink: 0;
+}
+.btn-cancel {
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  background: transparent;
+  border: 1px solid rgba(197,160,89,0.2);
+  color: rgba(197,160,89,0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cancel:hover { border-color: rgba(197,160,89,0.4); color: var(--primary-gold); }
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--primary-gold);
+  color: #0F0E0D;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.btn-submit:hover:not(:disabled) { filter: brightness(1.1); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>

@@ -12,8 +12,12 @@
 </template>
 
 <script setup>
+import { ref, provide } from 'vue'
 import SideNav from '@/components/SideNav.vue'
 import TopBar from '@/components/TopBar.vue'
+
+const showCreateKnowledgeModal = ref(false)
+provide('showCreateKnowledgeModal', showCreateKnowledgeModal)
 </script>
 
 <style scoped>

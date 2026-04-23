@@ -218,8 +218,14 @@ function selectQuestion(q) {
 async function sendMessage() {
   const text = inputText.value.trim()
   if (!text) return
+
   messages.value.push({ role: 'user', content: text })
   inputText.value = ''
+  await nextTick()
+  scrollToBottom()
+
+  messages.value.push({ role: 'assistant', content: '' })
+  const idx = messages.value.length - 1
   await nextTick()
   scrollToBottom()
 
@@ -229,15 +235,59 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: 'daogou_agent_test123', user_input: text }),
     })
-    const data = await res.json()
-    messages.value.push({ role: 'assistant', content: data.response })
-  } catch {
-    messages.value.push({ role: 'assistant', content: '网络异常，请稍后重试。' })
-  }
 
-  await nextTick()
-  scrollToBottom()
+    if (!res.ok || !res.body) {
+      throw new Error('Failed to fetch stream')
+    }
+
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+    let done = false
+
+    while (!done) {
+      const { value, done: readerDone } = await reader.read()
+      done = readerDone
+
+      if (value) {
+        const chunk = decoder.decode(value, { stream: true })
+        messages.value[idx].content += chunk
+        await nextTick()
+        scrollToBottom()
+      }
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    if (messages.value[idx].content === '') {
+      messages.value[idx].content = '网络异常，请稍后重试。'
+    }
+    await nextTick()
+    scrollToBottom()
+  }
 }
+
+// async function sendMessage() {
+//   const text = inputText.value.trim()
+//   if (!text) return
+//   messages.value.push({ role: 'user', content: text })
+//   inputText.value = ''
+//   await nextTick()
+//   scrollToBottom()
+
+//   try {
+//     const res = await fetch('http://localhost:8000/daogou/chat', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ session_id: 'daogou_agent_test123', user_input: text }),
+//     })
+//     const data = await res.json()
+//     messages.value.push({ role: 'assistant', content: data.response })
+//   } catch {
+//     messages.value.push({ role: 'assistant', content: '网络异常，请稍后重试。' })
+//   }
+
+//   await nextTick()
+//   scrollToBottom()
+// }
 
 function scrollToBottom() {
   if (messagesEl.value) {

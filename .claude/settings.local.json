@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/wanwan/CursorSpace/star_coffee/public/images/common /Users/wanwan/CursorSpace/star_coffee/public/images/knowledge /Users/wanwan/CursorSpace/star_coffee/public/images/agent /Users/wanwan/CursorSpace/star_coffee/public/images/chat)",
+      "Bash(cp /Users/wanwan/CursorSpace/coffee/image/common/touxiang.png /Users/wanwan/CursorSpace/star_coffee/public/images/common/)",
+      "Bash(cp /Users/wanwan/CursorSpace/coffee/image/knowledge/*.png /Users/wanwan/CursorSpace/star_coffee/public/images/knowledge/)",
+      "Bash(cp /Users/wanwan/CursorSpace/coffee/image/agent/*.png /Users/wanwan/CursorSpace/star_coffee/public/images/agent/)",
+      "Bash(npm install *)"
+    ]
+  }
+}

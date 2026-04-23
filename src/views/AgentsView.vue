@@ -222,21 +222,21 @@ async function sendMessage() {
   inputText.value = ''
   await nextTick()
   scrollToBottom()
-  // 模拟顾问回复
-  setTimeout(async () => {
-    const replies = {
-      '我偏爱果酸明亮的风味，今天湿度高，该调粗还是细研磨？':
-        '湿度高时空气含水量大，咖啡粉吸湿后流速变慢，建议适当调粗 1-2 格，保持萃取时间在 25-30s 之间，果酸层次会更干净明亮。',
-      '口感醇正，不要太甜，推荐什么咖啡？':
-        '推荐您试试我们的「耶加雪菲日晒」——花香清雅、果酸柔和，甜感内敛不腻口。若偏爱更厚重的醇度，「苏门答腊曼特宁」也是绝佳选择。',
-      '新客第一次来店，给我介绍下你们比较特色的咖啡吧？':
-        '欢迎！我们主打精品单品豆，每季轮换产区。当季主推「巴拿马瑰夏」，茉莉花香与桃子果汁感并存，是入门精品咖啡的绝佳起点。也可以告诉我您平时的口味偏好，我来为您精准匹配。',
-    }
-    const reply = replies[text] || '感谢您的提问！我们的顾问将为您提供专属的咖啡建议，请稍候片刻。'
-    messages.value.push({ role: 'assistant', content: reply })
-    await nextTick()
-    scrollToBottom()
-  }, 800)
+
+  try {
+    const res = await fetch('http://localhost:8000/daogou/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: 'daogou_agent_test123', user_input: text }),
+    })
+    const data = await res.json()
+    messages.value.push({ role: 'assistant', content: data.response })
+  } catch {
+    messages.value.push({ role: 'assistant', content: '网络异常，请稍后重试。' })
+  }
+
+  await nextTick()
+  scrollToBottom()
 }
 
 function scrollToBottom() {

@@ -17,7 +17,7 @@
               type="text"
             />
           </div>
-          <button class="filter-btn">
+          <button class="filter-btn" @click="handleFilterClick"> 
             <span class="material-symbols-outlined">filter_list</span>
           </button>
         </div>
@@ -31,7 +31,7 @@
             :key="tag"
             class="filter-tag"
             :class="{ active: activeTag === tag }"
-            @click="activeTag = tag"
+            @click="activeTag = tag;handleFilterClick()"
           ># {{ tag }}</button>
         </div>
       </div>
@@ -62,18 +62,23 @@
         <!-- Document Grid -->
         <div class="doc-grid">
           <!-- Card 1 -->
-          <div class="doc-card glass-card">
+          <div  
+          v-for="item in knowledgeList"
+          key="item.id"
+          class="doc-card glass-card"
+          >
             <div class="doc-card-img-wrap">
-              <img src="/images/knowledge/kafeiji.png" alt="Espresso Machine" class="doc-card-img" />
+              
+              <img :src="'http://localhost:8000' + item.image_url" :alt="item.name" class="doc-card-img" />
               <div class="doc-card-img-overlay"></div>
-              <span class="doc-card-tag">技术标准</span>
+              <span class="doc-card-tag">{{ item.label }}</span>
             </div>
             <div class="doc-card-body">
               <div class="doc-card-row">
-                <h4 class="doc-card-title">意式浓缩萃取 v2.1</h4>
-                <span class="doc-card-id">DOC-6623</span>
+                <h4 class="doc-card-title">{{ item.name }}</h4>
+                <span class="doc-card-id">{{ item.code }}</span>
               </div>
-              <p class="doc-card-desc">适用于旗舰店主要型号咖啡机的标准化萃取曲线。包含粉重、液重、压力和流速控制。</p>
+              <p class="doc-card-desc">{{ item.description }}</p>
               <div class="doc-card-footer">
                 <span class="doc-card-time">2 小时前更新</span>
                 <span class="doc-card-link">查看详情</span>
@@ -81,64 +86,7 @@
             </div>
           </div>
 
-          <!-- Card 2 -->
-          <div class="doc-card glass-card">
-            <div class="doc-card-img-wrap">
-              <img src="/images/knowledge/coffee1.png" alt="Latte Art" class="doc-card-img" />
-              <div class="doc-card-img-overlay"></div>
-              <span class="doc-card-tag">服务话术</span>
-            </div>
-            <div class="doc-card-body">
-              <div class="doc-card-row">
-                <h4 class="doc-card-title">过敏源应答话术库</h4>
-                <span class="doc-card-id">DOC-8890</span>
-              </div>
-              <p class="doc-card-desc">针对坚果、乳糖、麸质等过敏源的标准化服务术语与替代建议，确保食品安全沟通合规。</p>
-              <div class="doc-card-footer">
-                <span class="doc-card-time">昨日更新</span>
-                <span class="doc-card-link">查看详情</span>
-              </div>
-            </div>
-          </div>
-
-            <!-- Card 3 -->
-            <div class="doc-card glass-card">
-            <div class="doc-card-img-wrap">
-              <img src="/images/knowledge/kafeitou.png" alt="Coffee Beans" class="doc-card-img" />
-              <div class="doc-card-img-overlay"></div>
-              <span class="doc-card-tag">供应链</span>
-            </div>
-            <div class="doc-card-body">
-              <div class="doc-card-row">
-                <h4 class="doc-card-title">埃塞俄比亚原产地手册</h4>
-                <span class="doc-card-id">DOC-5501</span>
-              </div>
-              <p class="doc-card-desc">了解我们的耶加雪菲和西达摩产区。包含处理法、风味轮以及供应商质量控制标准。</p>
-              <div class="doc-card-footer">
-                <span class="doc-card-time">3 天前更新</span>
-                <span class="doc-card-link">查看详情</span>
-              </div>
-            </div>
-          </div>
-      
-          <div class="doc-card glass-card">
-            <div class="doc-card-img-wrap">
-              <img src="/images/knowledge/kafeiwu.png" alt="Latte Art" class="doc-card-img" />
-              <div class="doc-card-img-overlay"></div>
-              <span class="doc-card-tag">AI 咖啡风味匹配模型</span>
-            </div>
-            <div class="doc-card-body">
-              <div class="doc-card-row">
-                <h4 class="doc-card-title">AI 咖啡风味匹配模型</h4>
-                <span class="doc-card-id">DOC-880</span>
-              </div>
-              <p class="doc-card-desc">针对坚果、乳糖、麸质等过敏源的标准化服务术语与替代建议，确保食品安全沟通合规。</p>
-              <div class="doc-card-footer">
-                <span class="doc-card-time">昨日更新</span>
-                <span class="doc-card-link">查看详情</span>
-              </div>
-            </div>
-          </div>
+         
 
         
 
@@ -347,11 +295,18 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject } from 'vue'
+import { ref, computed, watch, inject , onMounted} from 'vue'
+// ===== 新增代码：导入 axios =====
+import axios from 'axios'
 
 const searchQuery = ref('')
 const activeTag = ref('全部')
-const filterTags = ['全部', '新品', '高毛利', '易出错', '需审批', '顾客高频问']
+// ===== 新增代码：用于存储实际传递给后端的 label =====
+const selectedLabelForFilter = computed(() => {
+  // 如果选中的是“全部”，则不传 label 参数
+  return activeTag.value === '全部' ? '' : activeTag.value;
+});
+const filterTags = ['全部', '菜单', '企业规章制度', '食品标准配方', '私域运营策略','会员体系','设备操作与维护','品牌视觉规范','门店 SOP']
 
 const weeklyUpdates = [
   { title: '新增：冷萃出杯时长标准', time: '2 小时前', category: '运营 SOP' },
@@ -362,7 +317,7 @@ const weeklyUpdates = [
 const categories_nav = [
   { icon: 'menu_book', name: '产品与菜单手册', children: ['咖啡菜单', '咖啡豆档案', '饮品&食品标准配方', '新品研发流程与测试记录'] },
   { icon: 'store', name: '运营与现场管理', children: ['门店 SOP(开店/闭店、清洁消毒)', '库存管理、损耗控制', '食品安全规范', '设备操作与维护', '故障应急处理'] },
-  { icon: 'favorite', name: '顾客体验与营销', children: ['迎宾、点单、客诉处理', '会员体系与私域运营策略', '品牌视觉规范、内容素材库', '本地化营销方案'] },
+  { icon: 'favorite', name: '顾客体验与营销', children: ['迎宾、点单、客诉处理', '会员体系','私域运营策略', '品牌视觉规范、内容素材库', '本地化营销方案'] },
   { icon: 'groups', name: '人员与制度规范', children: ['企业规章制度', '岗位职责与晋升路径', '培训资料', '劳动合规与应急预案'] },
   { icon: 'inventory_2', name: '供应链与成本管控', children: ['供应商管理', '采购标准', '成本核算模型'] },
   { icon: 'bar_chart', name: '数据与持续改进', children: ['经营数据报表模板', '顾客反馈/改进行动追踪', '知识库更新机制与版本管理'] },
@@ -370,6 +325,8 @@ const categories_nav = [
 
 const activeCategory = ref(null)
 const activeChild = ref(null)
+
+
 
 function toggleCategory(idx) {
   activeCategory.value = activeCategory.value === idx ? null : idx
@@ -390,13 +347,16 @@ const isDragging = ref(false)
 const fileInputRef = ref(null)
 const isCoverDragging = ref(false)
 const coverInputRef = ref(null)
-
+// ===== 新增代码：添加 loading 状态 =====
+const isLoading = ref(false)
 const categories = Object.keys(categoryTagMap)
 
 const defaultForm = () => ({ name: '', category: '', description: '', tags: [], files: [], coverPreview: '' })
 const form = ref(defaultForm())
 
 const availableTags = computed(() => categoryTagMap[form.value.category] ?? [])
+// ===== 新增代码：定义知识库列表的响应式变量 =====
+const knowledgeList = ref([])
 
 watch(() => form.value.category, () => { form.value.tags = [] })
 
@@ -406,9 +366,40 @@ function toggleTag(tag) {
   else form.value.tags.splice(idx, 1)
 }
 
+// ===== 新增代码：定义获取知识库列表的函数 =====
+async function fetchKnowledgeList(keyword = '', label = '') {
+  try {
+    // 构建查询参数
+    const params = {};
+    if (keyword) params.keyword = keyword;
+    if (label) params.label = label;
+
+    const response = await axios.get('http://localhost:8000/starcoffee/knowledge/get/',{params})
+    console.log('获取知识库列表成功:', response.data)
+    // 假设后端返回的数据结构为 { data: [...] }
+    knowledgeList.value = response.data.data || []
+  } catch (error) {
+    console.error('获取知识库列表失败:', error)
+    alert('加载知识库列表失败，请稍后重试。')
+    // 可以在这里设置一个错误状态变量用于在UI上显示
+  }
+}
+
+// ===== 新增代码：在组件挂载时调用获取函数 =====
+onMounted(() => {
+  fetchKnowledgeList()
+})
+
+// ===== 新增代码：处理筛选按钮点击 =====
+function handleFilterClick() {
+  fetchKnowledgeList(searchQuery.value.trim(), selectedLabelForFilter.value);
+}
+
 function closeModal() {
   showCreateModal.value = false
   form.value = defaultForm()
+   // ===== 新增代码：重置 loading 状态 =====
+   isLoading.value = false
 }
 
 function triggerFileInput() { fileInputRef.value?.click() }
@@ -430,6 +421,9 @@ function setCoverFile(file) {
   const reader = new FileReader()
   reader.onload = e => { form.value.coverPreview = e.target.result }
   reader.readAsDataURL(file)
+  // ===== 新增代码：保存原始文件对象 =====
+  form.value.coverFile = file
+
 }
 
 function handleCoverChange(e) {
@@ -442,14 +436,104 @@ function handleCoverDrop(e) {
   setCoverFile(e.dataTransfer.files[0])
 }
 
-function removeCover() { form.value.coverPreview = '' }
+function removeCover() { 
+  form.value.coverPreview = '' 
+   // ===== 新增代码：重置封面文件 =====
+  form.value.coverFile = null
+}
 
 function removeFile(i) { form.value.files.splice(i, 1) }
 
-function handleSubmit() {
-  console.log('create knowledge base', form.value)
-  closeModal()
+// function handleSubmit() {
+//   console.log('create knowledge base', form.value)
+//   closeModal()
+// }
+// ===== 新增代码：验证表单 =====
+function validateForm() {
+  if (!form.value.name.trim()) {
+    alert('请填写知识库名称')
+    return false
+  }
+  if (!form.value.category) {
+    alert('请选择分类')
+    return false
+  }
+  if (form.value.tags.length === 0) {
+    alert('请至少选择一个标签')
+    return false
+  }
+  if (!form.value.description.trim()) {
+    alert('请填写简介')
+    return false
+  }
+  if (!form.value.coverFile) {
+    alert('请上传封面图片')
+    return false
+  }
+  if (form.value.files.length === 0) {
+    alert('请上传至少一个文档')
+    return false
+  }
+  return true
 }
+
+// ===== 新增代码：提交表单到后端 =====
+async function handleSubmit() {
+  // 验证表单
+  if (!validateForm()) return
+  
+  // 设置 loading 状态
+  isLoading.value = true
+  
+  try {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    formData.append('name', form.value.name)
+    formData.append('category', form.value.category)
+    formData.append('label', form.value.tags.join(',')) // 多个标签用逗号拼接
+    formData.append('description', form.value.description)
+    
+    // 添加封面图片
+    formData.append('image', form.value.coverFile)
+    
+    // 添加文档文件（支持多个）
+    form.value.files.forEach(file => {
+      formData.append('file', file)
+    })
+    
+    // 发送请求
+    const response = await axios.post('http://localhost:8000/starcoffee/rag/knowledge', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    
+    // 处理成功响应
+    console.log('知识库创建成功:', response.data)
+    alert(response.data.message)
+    
+    // 关闭模态框
+    closeModal()
+  } catch (error) {
+    // 处理错误
+    console.error('创建知识库失败:', error)
+    if (error.response) {
+      // 服务器返回了错误响应
+      alert(`创建失败: ${error.response.data.message || error.response.statusText}`)
+    } else if (error.request) {
+      // 请求已发出但没有收到响应
+      alert('网络错误，请检查服务器是否运行')
+    } else {
+      // 其他错误
+      alert('创建失败: ' + error.message)
+    }
+  } finally {
+    // 重置 loading 状态
+    isLoading.value = false
+  }
+}
+
+
 </script>
 
 <style scoped>
@@ -1156,4 +1240,13 @@ function handleSubmit() {
 }
 .btn-submit:hover:not(:disabled) { filter: brightness(1.1); }
 .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ===== 新增代码：加载状态样式 ===== */
+.btn-submit.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.btn-submit.loading::after {
+  content: "...";
+}
 </style>

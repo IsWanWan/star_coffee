@@ -230,7 +230,7 @@ async function sendMessage() {
   scrollToBottom()
 
   try {
-    const res = await fetch('http://localhost:8000/daogou/chat', {
+    const res = await fetch('http://localhost:8000/starcoffee/recommender/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: 'daogou_agent_test123', user_input: text }),
@@ -265,29 +265,6 @@ async function sendMessage() {
   }
 }
 
-// async function sendMessage() {
-//   const text = inputText.value.trim()
-//   if (!text) return
-//   messages.value.push({ role: 'user', content: text })
-//   inputText.value = ''
-//   await nextTick()
-//   scrollToBottom()
-
-//   try {
-//     const res = await fetch('http://localhost:8000/daogou/chat', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ session_id: 'daogou_agent_test123', user_input: text }),
-//     })
-//     const data = await res.json()
-//     messages.value.push({ role: 'assistant', content: data.response })
-//   } catch {
-//     messages.value.push({ role: 'assistant', content: '网络异常，请稍后重试。' })
-//   }
-
-//   await nextTick()
-//   scrollToBottom()
-// }
 
 function scrollToBottom() {
   if (messagesEl.value) {
@@ -309,7 +286,7 @@ function scrollToBottom() {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  background: var(--bg-brown);
+  background:  #191210;
   padding: 40px;
   margin: 24px 40px 0;
   border: 1px solid rgba(197,160,89,0.1);

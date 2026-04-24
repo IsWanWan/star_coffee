@@ -1,0 +1,39 @@
+# ======================
+# 操作系统 & 编辑器
+# ======================
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ======================
+# Node.js / npm
+# ======================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# Vite / 构建产物
+# ======================
+dist/
+.cache/
+.temp/
+# 关键！忽略 Vite 预构建依赖（就是你截图里那些 deps 文件）
+node_modules/.vite/
+node_modules/**/deps/
+
+# ======================
+# 环境变量
+# ======================
+.env.local
+.env.*.local
+
+# ======================
+# 其他临时文件
+# ======================
+*.log

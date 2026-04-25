@@ -36,7 +36,7 @@
 
       <!-- Knowledge Category Accordion -->
       <div v-if="route.path === '/knowledge'" class="sidebar-section">
-        <div class="sidebar-section-toggle" style="pointer-events:none">
+        <div class="sidebar-section-toggle"  @click="clearKnowledgeLabel" style="cursor: pointer;">
           <span>知识库分类</span>
         </div>
         <div class="knowledge-cat-list">
@@ -137,6 +137,14 @@ const knowledgeCategories = [
     children: ['经营数据报表模板', '顾客反馈/改进行动追踪', '知识库更新机制与版本管理'],
   },
 ]
+
+// ===== 新增功能：清空知识库分类标签 =====
+function clearKnowledgeLabel() {
+  // 清空 label 查询参数，保留其他参数（如 keyword）
+  const newQuery = { ...route.query }
+  delete newQuery.label // 移除 label
+  router.replace({ path: '/knowledge', query: newQuery })
+}
 
 function toggleKnowledgeCat(idx) {
   activeKnowledgeCat.value = activeKnowledgeCat.value === idx ? null : idx

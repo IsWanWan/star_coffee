@@ -51,10 +51,10 @@
               <span class="material-symbols-outlined" style="font-size:14px">auto_awesome</span>
               每日重点推荐
             </div>
-            <h2 class="hero-title">Q3 夏日特调:<br /><span class="hero-title-accent">落日琥珀配方解析</span></h2>
+            <h2 class="hero-title">Q3 夏日特调:<br /><span class="hero-title-accent">落日琥珀制作详解</span></h2>
             <p class="hero-desc">揭秘本季度最受欢迎的冷萃新品。掌握分层美学、特制海盐芝士奶盖的黄金比例，以及如何向顾客介绍其独特的风味层次。</p>
             <div style="display:flex;justify-content:flex-end">
-              <button class="hero-btn"   @click="openPdfViewer('/upload/document/夏日特调落日琥珀制作详解.pdf', 'Q3 夏日特调: 落日琥珀配方解析')">立即学习</button>
+              <button class="hero-btn"   @click="openPdfViewer('/upload/document/夏日特调落日琥珀制作详解.pdf', 'Q3 夏日特调: 落日琥珀制作详解')">立即学习</button>
             </div>
           </div>
         </section>

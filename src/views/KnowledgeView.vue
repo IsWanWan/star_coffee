@@ -31,7 +31,7 @@
             :key="tag"
             class="filter-tag"
             :class="{ active: activeTag === tag }"
-            @click="activeTag = tag;handleFilterClick()"
+            @click="handleTagClick(tag)"
           ># {{ tag }}</button>
         </div>
       </div>
@@ -317,9 +317,13 @@
 
 <script setup>
 import { ref, computed, watch, inject , onMounted} from 'vue'
+import { useRoute ,useRouter} from 'vue-router'
 // ===== 新增代码：导入 axios =====
 import axios from 'axios'
 
+
+const route = useRoute()
+const router = useRouter()
 const searchQuery = ref('')
 const activeTag = ref('全部')
 // ===== 新增代码：用于存储实际传递给后端的 label =====
@@ -387,13 +391,36 @@ function toggleTag(tag) {
   else form.value.tags.splice(idx, 1)
 }
 
+// ===== 新增：处理顶部标签点击（特别处理“全部”）=====
+function handleTagClick(tag) {
+  activeTag.value = tag
+
+  if (tag === '全部') {
+    // 清空 label 查询参数，保留其他参数（如 keyword）
+    const newQuery = { ...route.query }
+    delete newQuery.label // 移除 label
+    router.replace({ path: '/knowledge', query: newQuery }).then(() => {
+      fetchKnowledgeList(searchQuery.value.trim())
+    })
+  } else {
+    // 非“全部”：走原有筛选逻辑
+    handleFilterClick()
+  }
+}
+
 // ===== 新增代码：定义获取知识库列表的函数 =====
 async function fetchKnowledgeList(keyword = '', label = '') {
   try {
     // 构建查询参数
     const params = {};
     if (keyword) params.keyword = keyword;
-    if (label) params.label = label;
+    
+
+     // 优先使用 URL 查询参数中的 label
+    const labelFromQuery = route.query.label
+     if (labelFromQuery) {
+      params.label = labelFromQuery
+    }else if (label) params.label = label;
 
     const response = await axios.get('http://localhost:8000/starcoffee/knowledge/get/',{params})
     console.log('获取知识库列表成功:', response.data)
@@ -406,10 +433,20 @@ async function fetchKnowledgeList(keyword = '', label = '') {
   }
 }
 
-// ===== 新增代码：在组件挂载时调用获取函数 =====
-onMounted(() => {
-  fetchKnowledgeList()
-})
+// // ===== 新增代码：在组件挂载时调用获取函数 =====
+// onMounted(() => {
+//   fetchKnowledgeList()
+// })
+
+// ===== 新增代码：监听 route.query.label 变化，自动刷新列表 =====
+watch(
+  () => route.query.label,
+  (newLabel) => {
+    // 当 label 变化时，重新获取数据
+    fetchKnowledgeList(searchQuery.value.trim())
+  },
+  { immediate: true } // 组件挂载时也执行一次
+)
 
 // ===== 新增代码：处理筛选按钮点击 =====
 function handleFilterClick() {
@@ -771,7 +808,7 @@ async function handleSubmit() {
   letter-spacing: 0.03em;
 }
 .hero-title-accent { font-weight: 700; color: var(--primary-gold); }
-.hero-desc { font-size: 14px; color: rgba(197,160,89,0.8); line-height: 1.6; margin-bottom: 24px; }
+.hero-desc { font-size: 14px; color: rgba(232, 206, 157, 0.8); line-height: 1.6; margin-bottom: 24px; }
 .hero-btn {
   background: var(--primary-gold);
   color: #0F0E0D;

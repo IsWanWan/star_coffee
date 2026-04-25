@@ -52,7 +52,11 @@
             </button>
             <div class="kcat-children" :class="{ expanded: activeKnowledgeCat === idx }">
               <div>
-                <button v-for="(child, ci) in cat.children" :key="ci" class="kcat-child">
+                <button v-for="(child, ci) in cat.children" 
+                :key="ci" 
+                class="kcat-child" 
+                :class="{ active: child === currentLabel }" 
+                @click="goToKnowledgeWithLabel(child)">
                   <span class="kcat-dot"></span>
                   {{ child }}
                 </button>
@@ -90,11 +94,13 @@
 
 <script setup>
 import { ref, computed, inject } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 
 const showCreateKnowledgeModal = inject('showCreateKnowledgeModal', ref(false))
 
 const route = useRoute()
+const router = useRouter() // ← 新增
+
 const sectionOpen = ref(true)
 const activeKnowledgeCat = ref(null)
 
@@ -135,6 +141,15 @@ const knowledgeCategories = [
 function toggleKnowledgeCat(idx) {
   activeKnowledgeCat.value = activeKnowledgeCat.value === idx ? null : idx
 }
+// ===== 新增代码：跳转到 knowledge 页面并携带 label 查询参数 =====
+function goToKnowledgeWithLabel(label) {
+  router.push({
+    path: '/knowledge',
+    query: { label: label }
+  })
+}
+// 在 Sidebar.vue 的 script setup 中
+const currentLabel = computed(() => route.query.label || '')
 
 const actionLabel = computed(() => {
   if (route.path === '/chat') return '开启新对话'
@@ -171,3 +186,10 @@ function handleActionClick() {
   }
 }
 </script>
+
+<style>
+.kcat-child.active {
+  color: var(--primary-gold);
+  font-weight: bold;
+}
+</style>

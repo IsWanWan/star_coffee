@@ -54,7 +54,7 @@
             <h2 class="hero-title">Q3 夏日特调:<br /><span class="hero-title-accent">落日琥珀配方解析</span></h2>
             <p class="hero-desc">揭秘本季度最受欢迎的冷萃新品。掌握分层美学、特制海盐芝士奶盖的黄金比例，以及如何向顾客介绍其独特的风味层次。</p>
             <div style="display:flex;justify-content:flex-end">
-              <button class="hero-btn">立即学习</button>
+              <button class="hero-btn" @click="openPdfViewer">立即学习</button>
             </div>
           </div>
         </section>
@@ -80,11 +80,11 @@
               </div>
               <p class="doc-card-desc">{{ item.description }}</p>
               <div class="doc-card-footer">
-                <span class="doc-card-time">2 小时前更新</span>
+                <span class="doc-card-time">{{ item.update_time }}更新</span>
                 <span class="doc-card-link">查看详情</span>
               </div>
             </div>
-          </div>
+          </div>    
 
          
 
@@ -291,6 +291,27 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- ===== 新增代码：PDF查看器模态框 ===== -->
+    <Teleport to="body">
+    <div v-if="showPdfViewer" class="modal-overlay" @click.self="closePdfViewer">
+      <div class="pdf-viewer-modal">
+        <div class="pdf-viewer-header">
+          <h3 class="pdf-viewer-title">{{ pdfTitle }}</h3>
+          <button class="pdf-viewer-close" @click="closePdfViewer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="pdf-viewer-content">
+          <iframe 
+            :src="pdfUrl" 
+            class="pdf-iframe"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+    </Teleport>
   </div>
 </template>
 
@@ -441,6 +462,27 @@ function removeCover() {
    // ===== 新增代码：重置封面文件 =====
   form.value.coverFile = null
 }
+
+// ===== 新增代码：PDF查看器状态管理 =====
+const showPdfViewer = ref(false)
+const pdfUrl = ref('')
+const pdfTitle = ref('')
+
+// ===== 新增代码：打开PDF查看器 =====
+function openPdfViewer() {
+  pdfUrl.value = 'http://localhost:8000/upload/document/夏日特调落日琥珀制作详解.pdf'
+  pdfTitle.value = 'Q3 夏日特调: 落日琥珀制作详解'
+  showPdfViewer.value = true
+}
+
+// ===== 新增代码：关闭PDF查看器 =====
+function closePdfViewer() {
+  showPdfViewer.value = false
+  pdfUrl.value = ''
+  pdfTitle.value = ''
+}
+
+
 
 function removeFile(i) { form.value.files.splice(i, 1) }
 
@@ -1249,4 +1291,70 @@ async function handleSubmit() {
 .btn-submit.loading::after {
   content: "...";
 }
+
+/* ===== 新增代码：PDF查看器样式 ===== */
+.pdf-viewer-modal {
+  background: #1c1710;
+  border: 1px solid rgba(197,160,89,0.2);
+  border-radius: 16px;
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+
+.pdf-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid rgba(197,160,89,0.1);
+  flex-shrink: 0;
+}
+
+.pdf-viewer-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.pdf-viewer-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(197,160,89,0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.pdf-viewer-close:hover {
+  background: rgba(197,160,89,0.1);
+}
+
+.pdf-viewer-close .material-symbols-outlined {
+  color: rgba(197,160,89,0.6);
+  font-size: 18px;
+}
+
+.pdf-viewer-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.pdf-iframe {
+  width: 100%;
+  height: 100%;
+  background: #0F0E0D;
+}
+
 </style>

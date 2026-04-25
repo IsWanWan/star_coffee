@@ -54,7 +54,7 @@
             <h2 class="hero-title">Q3 夏日特调:<br /><span class="hero-title-accent">落日琥珀配方解析</span></h2>
             <p class="hero-desc">揭秘本季度最受欢迎的冷萃新品。掌握分层美学、特制海盐芝士奶盖的黄金比例，以及如何向顾客介绍其独特的风味层次。</p>
             <div style="display:flex;justify-content:flex-end">
-              <button class="hero-btn" @click="openPdfViewer">立即学习</button>
+              <button class="hero-btn"   @click="openPdfViewer('/upload/document/夏日特调落日琥珀制作详解.pdf', 'Q3 夏日特调: 落日琥珀配方解析')">立即学习</button>
             </div>
           </div>
         </section>
@@ -81,7 +81,7 @@
               <p class="doc-card-desc">{{ item.description }}</p>
               <div class="doc-card-footer">
                 <span class="doc-card-time">{{ item.update_time }}更新</span>
-                <span class="doc-card-link">查看详情</span>
+                <span class="doc-card-link" @click.stop="openPdfViewer(item.file_url, item.name)">查看详情</span>
               </div>
             </div>
           </div>    
@@ -469,10 +469,22 @@ const pdfUrl = ref('')
 const pdfTitle = ref('')
 
 // ===== 新增代码：打开PDF查看器 =====
-function openPdfViewer() {
-  pdfUrl.value = 'http://localhost:8000/upload/document/夏日特调落日琥珀制作详解.pdf'
-  pdfTitle.value = 'Q3 夏日特调: 落日琥珀制作详解'
+function openPdfViewer(fileUrl, title) {
+  if (!fileUrl) {
+    console.warn('No PDF file URL provided')
+    return
+  }
+
+ // 处理相对路径 - 如果 file_url 是相对路径，拼接基础URL
+ if (fileUrl.startsWith('http')) {
+    pdfUrl.value = fileUrl
+  } else {
+    pdfUrl.value = 'http://localhost:8000' + fileUrl
+  }
+  
+  pdfTitle.value = title || '文档详情'
   showPdfViewer.value = true
+
 }
 
 // ===== 新增代码：关闭PDF查看器 =====

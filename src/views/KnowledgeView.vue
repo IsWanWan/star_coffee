@@ -20,9 +20,10 @@
           <button class="filter-btn" @click="handleFilterClick"> 
             <span class="material-symbols-outlined">filter_list</span>
           </button>
+
         </div>
       </div>
-      <!-- Quick Filters -->
+      <!-- Quick Filters
       <div class="quick-filters">
         <span class="filter-label">热门筛选:</span>
         <div class="filter-tags">
@@ -34,7 +35,7 @@
             @click="handleTagClick(tag)"
           ># {{ tag }}</button>
         </div>
-      </div>
+      </div> -->
     </header>
 
     <!-- Content -->
@@ -407,6 +408,7 @@ function handleTagClick(tag) {
     handleFilterClick()
   }
 }
+
 
 // ===== 新增代码：定义获取知识库列表的函数 =====
 async function fetchKnowledgeList(keyword = '', label = '') {

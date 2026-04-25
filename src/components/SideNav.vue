@@ -37,7 +37,7 @@
       <!-- Knowledge Category Accordion -->
       <div v-if="route.path === '/knowledge'" class="sidebar-section">
         <div class="sidebar-section-toggle"  @click="clearKnowledgeLabel" style="cursor: pointer;">
-          <span>知识库分类</span>
+          <span>知识库分类（全部文档）</span>
         </div>
         <div class="knowledge-cat-list">
           <div v-for="(cat, idx) in knowledgeCategories" :key="idx" class="kcat-item">

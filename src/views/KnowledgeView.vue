@@ -24,7 +24,7 @@
       </div>
       <!-- Quick Filters -->
       <div class="quick-filters">
-        <span class="filter-label">快捷筛选:</span>
+        <span class="filter-label">热门筛选:</span>
         <div class="filter-tags">
           <button
             v-for="tag in filterTags"

@@ -90,7 +90,7 @@
           <p class="agent-desc">全天候监控咖啡生豆及辅料库存，基于历史销售数据进行补货预测与成本预警。</p>
           <div class="agent-card-footer">
             <span class="agent-last-active">LAST ACTIVE: 2H AGO</span>
-            <button class="agent-action-link">
+            <button class="agent-action-link" @click="goToChat('yingxiao')" >
               进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
             </button>
           </div>

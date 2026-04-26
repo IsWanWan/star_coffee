@@ -913,8 +913,8 @@ async function handleSubmit() {
 }
 .doc-card-time { font-size: 10px; color: rgba(197,160,89,0.4); }
 .doc-card-link {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--primary-gold);

@@ -2,7 +2,7 @@
   <div class="app-layout">
     <SideNav />
     <div class="main-content">
-      <TopBar />
+      <!-- <TopBar /> -->
       <RouterView />
     </div>
     <!-- Background decoration -->

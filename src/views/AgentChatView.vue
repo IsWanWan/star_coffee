@@ -43,10 +43,10 @@
           </div>
           <div class="ai-body">
             <div class="ai-card">
-              <h2 class="ai-card-title">
+              <h6 class="ai-card-title">
                 <span class="material-symbols-outlined" style="font-size:16px">analytics</span>
                 {{ currentAgent.title }}
-              </h2>
+              </h6>
               <p class="ai-card-desc">{{ msg.summary }}</p>
               <div class="ai-reasons">
                 <div v-for="r in msg.reasons" :key="r.label" class="reason-item">
@@ -302,7 +302,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 32px 24px;
+  /* padding: 32px 24px; */
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -396,7 +396,7 @@
 }
 .ai-card-title {
   display: flex; align-items: center; gap: 8px;
-  font-size: 18px; font-weight: 500; letter-spacing: 0.02em;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.02em;
   color: var(--primary);
   margin-bottom: 8px;
 }

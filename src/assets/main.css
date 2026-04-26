@@ -269,7 +269,7 @@ html, body {
 /* ===== Top Bar ===== */
 .topbar {
   flex-shrink: 0;
-  height: 64px;
+  height: 60px;
   border-bottom: 1px solid var(--bg-brown);
   background: rgba(15,14,13,0.8);
   backdrop-filter: blur(12px);

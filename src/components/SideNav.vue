@@ -23,7 +23,7 @@
     <nav class="sidebar-nav">
       <RouterLink to="/chat" class="nav-item" :class="{ active: route.path === '/chat' }">
         <span class="material-symbols-outlined">smart_toy</span>
-        <span>AI 聊天</span>
+        <span>AI多智能体聊天</span>
       </RouterLink>
       <RouterLink to="/knowledge" class="nav-item" :class="{ active: route.path === '/knowledge' }">
         <span class="material-symbols-outlined">menu_book</span>

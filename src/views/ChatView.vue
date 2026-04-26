@@ -24,7 +24,7 @@
             <div class="ai-card">
               <h2 class="ai-card-title">
                 <span class="material-symbols-outlined" style="font-size:16px">analytics</span>
-                STAR COFFEE 美式咖啡馆智能助手
+                STAR COFFEE咖啡馆智能助手
               </h2>
               <p class="ai-card-desc">{{ msg.summary }}</p>
               <div class="ai-reasons">
@@ -225,7 +225,7 @@ function autoResize(e) {
 .msg-bubble.user-bubble {
   background: var(--bg-brown);
   border: 1px solid rgba(78,70,57,0.3);
-  padding: 16px;
+  padding: 12px;
   border-radius: 12px 0 12px 12px;
   max-width: 80%;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
@@ -254,7 +254,7 @@ function autoResize(e) {
 
 /* AI card */
 .ai-card {
-  padding: 16px;
+  padding: 12px;
   border-radius: 12px;
   background: var(--surface-container);
   border: 1px solid rgba(78,70,57,0.2);
@@ -262,7 +262,7 @@ function autoResize(e) {
 }
 .ai-card-title {
   display: flex; align-items: center; gap: 8px;
-  font-size: 18px; font-weight: 500; letter-spacing: 0.02em;
+  font-size: 14px; font-weight: 400; letter-spacing: 0.02em;
   color: var(--primary);
   margin-bottom: 8px;
 }

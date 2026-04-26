@@ -1,4 +1,5 @@
 <template>
+
   <div class="agents-view">
     <!-- Hero Section -->
     <section class="agents-hero">
@@ -14,7 +15,7 @@
       </div>
     </section>
 
-    <!-- Stats -->
+   
     <section class="stats-grid">
       <div v-for="stat in stats" :key="stat.label" class="stat-card luxury-card-glow">
         <div>
@@ -27,78 +28,9 @@
 
     <!-- Agent Grid -->
     <section class="agent-grid">
-      <!-- Agent 1: 吧台助手 -->
-      <div class="agent-card">
-        <div class="agent-card-img-wrap">
-          <img src="/images/agent/brew_coffee.png" alt="吧台助手" class="agent-card-img" />
-          <div class="agent-card-img-overlay"></div>
-          <div class="agent-status-badge active">
-            <span class="status-dot"></span> ACTIVE
-          </div>
-        </div>
-        <div class="agent-card-body">
-          <div class="agent-card-header">
-            <span class="material-symbols-outlined">coffee_maker</span>
-            <h3 class="agent-name">吧台助手</h3>
-          </div>
-          <p class="agent-desc">协助处理门店订单流转，负责咖啡豆原产地、风味描述等专业 Q&A 咨询。</p>
-          <div class="agent-card-footer">
-            <span class="agent-last-active">LAST ACTIVE: JUST NOW</span>
-            <button class="agent-action-link">
-              配置详情 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <!-- Agent 2: 库存管家 -->
-      <div class="agent-card">
-        <div class="agent-card-img-wrap">
-          <img src="/images/agent/kafeikucun.png" alt="库存管家" class="agent-card-img" style="opacity:0.7" />
-          <div class="agent-card-img-overlay" style="background:rgba(0,0,0,0.5)"></div>
-          <div class="agent-status-badge idle">IDLE</div>
-        </div>
-        <div class="agent-card-body">
-          <div class="agent-card-header">
-            <span class="material-symbols-outlined">inventory_2</span>
-            <h3 class="agent-name">库存管家</h3>
-          </div>
-          <p class="agent-desc">全天候监控咖啡生豆及辅料库存，基于历史销售数据进行补货预测与成本预警。</p>
-          <div class="agent-card-footer">
-            <span class="agent-last-active">LAST ACTIVE: 2H AGO</span>
-            <button class="agent-action-link">
-              进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agent 3: 安全巡检员 -->
-      <div class="agent-card">
-        <div class="agent-card-img-wrap">
-          <img src="/images/agent/anqunyuan.png" alt="安全巡检员" class="agent-card-img" />
-          <div class="agent-card-img-overlay"></div>
-          <div class="agent-status-badge active">
-            <span class="status-dot"></span> ACTIVE
-          </div>
-        </div>
-        <div class="agent-card-body">
-          <div class="agent-card-header">
-            <span class="material-symbols-outlined">verified_user</span>
-            <h3 class="agent-name">安全巡检员</h3>
-          </div>
-          <p class="agent-desc">实时监控烘焙机、商用咖啡机运行参数，确保食品安全合规与设备维护及时到位。</p>
-          <div class="agent-card-footer">
-            <span class="agent-last-active">LAST ACTIVE: JUST NOW</span>
-            <button class="agent-action-link">
-              安全日志 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agent 4: 导购顾问 (CRITICAL) -->
-      <div class="agent-card agent-card--critical">
+        <!-- Agent 1: 导购顾问 (CRITICAL) -->
+        <div class="agent-card agent-card--critical">
         <div class="agent-card-img-wrap">
           <img src="/images/agent/kafeiguwen.png" alt="风味顾问" class="agent-card-img" />
           <div class="agent-card-img-overlay" style="background:linear-gradient(to top, #231F1A, transparent)"></div>
@@ -118,6 +50,129 @@
           </div>
         </div>
       </div>
+
+       <!-- Agent 2: 客服工单处理-->
+       <div class="agent-card">
+        <div class="agent-card-img-wrap">
+          <img src="/images/agent/kefu.png" alt="客服工单处理" class="agent-card-img" />
+          <div class="agent-card-img-overlay"></div>
+          <div class="agent-status-badge active">
+            <span class="status-dot"></span> ACTIVE
+          </div>
+        </div>
+        <div class="agent-card-body">
+          <div class="agent-card-header">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h3 class="agent-name">客服工单处理</h3>
+          </div>
+          <p class="agent-desc">高效受理、分类、跟踪客户反馈与投诉。</p>
+          <div class="agent-card-footer">
+            <span class="agent-last-active">LAST ACTIVE: JUST NOW</span>
+            <button class="agent-action-link" @click="goToChat('kefu')" >
+            进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+        <!-- Agent 4: 营销策划 -->
+        <div class="agent-card">
+        <div class="agent-card-img-wrap">
+          <img src="/images/agent/yingxiao.png" alt="营销策划智能体" class="agent-card-img" style="opacity:0.7" />
+          <div class="agent-card-img-overlay" style="background:rgba(0,0,0,0.5)"></div>
+          <div class="agent-status-badge idle">IDLE</div>
+        </div>
+        <div class="agent-card-body">
+          <div class="agent-card-header">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <h3 class="agent-name">营销策划智能体</h3>
+          </div>
+          <p class="agent-desc">全天候监控咖啡生豆及辅料库存，基于历史销售数据进行补货预测与成本预警。</p>
+          <div class="agent-card-footer">
+            <span class="agent-last-active">LAST ACTIVE: 2H AGO</span>
+            <button class="agent-action-link">
+              进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 2: 吧台助手 -->
+      <div class="agent-card">
+        <div class="agent-card-img-wrap">
+          <img src="/images/agent/brew_coffee.png" alt="吧台助手" class="agent-card-img" />
+          <div class="agent-card-img-overlay"></div>
+          <div class="agent-status-badge active">
+            <span class="status-dot"></span> ACTIVE
+          </div>
+        </div>
+        <div class="agent-card-body">
+          <div class="agent-card-header">
+            <span class="material-symbols-outlined">coffee_maker</span>
+            <h3 class="agent-name">吧台助手</h3>
+          </div>
+          <p class="agent-desc">协助处理门店订单流转，负责咖啡豆原产地、风味描述等专业 Q&A 咨询。</p>
+          <div class="agent-card-footer">
+            <span class="agent-last-active">LAST ACTIVE: JUST NOW</span>
+           
+            <button class="agent-action-link"  @click="goToChat('bar-tender')" >
+              进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+       <!-- Agent 3: 培训测试智能体 -->
+       <div class="agent-card">
+        <div class="agent-card-img-wrap">
+          <img src="/images/agent/kafeikucun.png" alt="营销策划智能体" class="agent-card-img" style="opacity:0.7" />
+          <div class="agent-card-img-overlay" style="background:rgba(0,0,0,0.5)"></div>
+          <div class="agent-status-badge idle">IDLE</div>
+        </div>
+        <div class="agent-card-body">
+          <div class="agent-card-header">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <h3 class="agent-name">培训测试智能体</h3>
+          </div>
+          <p class="agent-desc">全天候监控咖啡生豆及辅料库存，基于历史销售数据进行补货预测与成本预警。</p>
+          <div class="agent-card-footer">
+            <span class="agent-last-active">LAST ACTIVE: 2H AGO</span>
+            <button class="agent-action-link">
+              进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    
+     
+
+      <!-- Agent 6: 运营洞察-->
+      <div class="agent-card">
+        <div class="agent-card-img-wrap">
+          <img src="/images/agent/anqunyuan.png" alt="运营洞察" class="agent-card-img" />
+          <div class="agent-card-img-overlay"></div>
+          <div class="agent-status-badge active">
+            <span class="status-dot"></span> ACTIVE
+          </div>
+        </div>
+        <div class="agent-card-body">
+          <div class="agent-card-header">
+            <span class="material-symbols-outlined">verified_user</span>
+            <h3 class="agent-name">运营洞察</h3>
+          </div>
+          <p class="agent-desc">让店主每天花1分钟看懂生意好坏及原因。</p>
+          <div class="agent-card-footer">
+            <span class="agent-last-active">LAST ACTIVE: JUST NOW</span>
+            <button class="agent-action-link">
+            进入面板 <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    
 
       <!-- Agent 5: Add New -->
       <div class="agent-card agent-card--add">
@@ -215,6 +270,15 @@ function selectQuestion(q) {
   sendMessage()
 }
 
+
+// 🔥 新增：路由跳转
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const goToChat = (agentId) => {
+  router.push(`/chat/${agentId}`)
+}
+
 async function sendMessage() {
   const text = inputText.value.trim()
   if (!text) return
@@ -287,8 +351,8 @@ function scrollToBottom() {
   overflow: hidden;
   border-radius: 12px;
   background:  #191210;
-  padding: 40px;
-  margin: 24px 40px 0;
+  padding: 20px;
+  margin: 14px 40px 0;
   border: 1px solid rgba(197,160,89,0.1);
 }
 .hero-bg-img {

@@ -119,7 +119,7 @@
         '如何向顾客介绍埃塞俄比亚耶加雪菲？',
         '今天的订单高峰期是什么时候？'
       ],
-      apiEndpoint: '/starcoffee/bar/chat'
+      apiEndpoint: '/starcoffee/counter/chat'
     },
     'kefu': {
       title: '客服工单处理',
@@ -200,8 +200,8 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          session_id: `agent_${agentId}_${Date.now()}`, 
-          user_input: text 
+        //   session_id: `agent_${agentId}_${Date.now()}`, 
+          query: text 
         }),
       })
   
@@ -212,8 +212,8 @@
       messages.value.push({
         id: nextId++,
         role: 'ai',
-        summary: data.summary || '已收到您的问题，正在处理...',
-        reasons: data.reasons || [{ label: '提示', text: '这是模拟响应。' }]
+        summary: data.answer || '已收到您的问题，正在处理...',
+        // reasons: data.reasons || [{ label: '提示', text: '这是模拟响应。' }]
       })
     } catch (error) {
       isTyping.value = false
